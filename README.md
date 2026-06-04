@@ -58,7 +58,7 @@ type item struct {
     Done        bool      `json:"done"`
     CreatedAt   time.Time `json:"created_at"`
     CompletedAt time.Time `json:"completed_at,omitempty"`
-    Task        string    `json:"task"`
+    Task        string    `json:"description"`
 }
 ```
 
@@ -101,6 +101,9 @@ Each mini-project lives in its own package directory. To run or test one:
 # Navigate to a project
 cd todocli
 
+# Run tests (if available)
+go test ./...
+
 # Or integrate the package in a main.go at the repo root
 go run main.go
 ```
@@ -129,4 +132,4 @@ Each mini-project in this repo follows a simple philosophy:
 
 ## 📝 License
 
-This repository is for personal learning purposes. Feel free to fork and use it as a template for your own Go experiments.
+This repository is licensed under the [MIT License](./LICENSE). Feel free to fork and use it as a template for your own Go experiments.
