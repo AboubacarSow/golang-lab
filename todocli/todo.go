@@ -49,7 +49,8 @@ func (t *Todos) List() []item {
 	return *t
 }
 func (t *Todos) LoadFromFile(filename string) error {
-	path := filepath.Join(os.TempDir(), filename)
+	dir, _ :=os.Getwd()
+	path := filepath.Join(dir, filename)
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -66,9 +67,9 @@ func (t *Todos) LoadFromFile(filename string) error {
 	}
 	return nil
 }
-
 func (t *Todos) SaveToFile(filename string) error {
-	path := filepath.Join(os.TempDir(), filename)
+	dir, _ :=os.Getwd()
+	path := filepath.Join(dir, filename)
 	data, err := json.Marshal(t)
 	if err != nil {
 		return err
