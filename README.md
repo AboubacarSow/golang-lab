@@ -21,46 +21,50 @@ golang-lab/
 
 ### 1. `todocli` — Command-Line Todo Manager
 
-A fully functional CLI todo application demonstrating foundational Go patterns.
+`todocli` is a completed CLI todo application that demonstrates idiomatic Go, JSON persistence, and simple flag-based command handling.
+
+**What it supports:**
+- Add a new todo item
+- List all todos in a formatted table
+- Mark a todo as completed by index
+- Delete a todo by index
+- Persist todos to `todos.json` in the current working directory
 
 **Concepts covered:**
-- Struct design and method receivers (`*Todos`)
-- Pointer semantics and slice manipulation
-- JSON marshalling / unmarshalling (`encoding/json`)
-- File I/O with the `os` and `path/filepath` packages
-- Error handling idioms (`errors.New`, `fmt.Errorf`)
-- Working with `time.Time` for timestamps
+- Go structs and method receivers
+- Pointer semantics and slice updates
+- JSON serialization and deserialization
+- File I/O and path handling
+- CLI argument parsing with `flag`
+- Error handling and exit status
+- Third-party package usage for terminal output
 
-**Features:**
-- Add, complete, delete, and list todo items
-- Persist todos to a JSON file in the OS temp directory
-- Graceful handling of missing or empty files on load
+**CLI usage:**
+```bash
+cd todocli
 
-**Usage example:**
-```go
-var todos todocli.Todos
+go run ./cmd/todo -list
 
-todos.LoadFromFile("todos.json")
-todos.Add("Learn Go interfaces")
-todos.Add("Build a REST API")
-todos.Complete(1)
-todos.Delete(2)
-todos.SaveToFile("todos.json")
+go run ./cmd/todo -add "Buy groceries"
 
-for i, item := range todos.List() {
-    fmt.Printf("[%d] %v\n", i+1, item)
-}
+go run ./cmd/todo -complete 1
+
+go run ./cmd/todo -delete 1
 ```
 
-**Key data model:**
-```go
-type item struct {
-    Done        bool      `json:"done"`
-    CreatedAt   time.Time `json:"created_at"`
-    CompletedAt time.Time `json:"completed_at,omitempty"`
-    Task        string    `json:"description"`
-}
+You can also provide task text through a pipe when using `-add`:
+```bash
+echo "Buy groceries" | go run ./cmd/todo -add
 ```
+
+**Available flags:**
+- `-add` : add a new todo (supports inline text or stdin via pipe)
+- `-complete <number>` : mark the todo at the given index as completed
+- `-delete <number>` : delete the todo at the given index
+- `-list` : list all todos
+
+**Persistence:**
+The todo list is stored in `todos.json` in the current working directory. If the file does not exist or is empty, the application starts with an empty list.
 
 ---
 
