@@ -11,7 +11,7 @@ A hands-on learning repository for experimenting with **Go (Golang)**. This proj
 ```
 golang-lab/
 ├── todocli/           # CLI-based Todo manager (file persistence, CRUD)
-├── ...                # More mini-projects coming soon
+├── inventory/         # Terminal inventory manager with TUI and JSON persistence
 └── README.md
 ```
 
@@ -68,13 +68,58 @@ The todo list is stored in `todos.json` in the current working directory. If the
 
 ---
 
+### 2. `inventory` — Terminal Inventory Manager
+
+`inventory` is a terminal user interface application that manages stock items and stores data in `data/inventory.json`.
+
+> **Refactored:** Started as a single `main.go` file, then restructured to apply **Single Responsibility** and **Clean Architecture** principles — separating domain logic, UI, and entry point into distinct packages.
+
+**Package structure:**
+```
+inventory/
+├── cmd/                  # Entry point — wires everything together
+├── data/                 # JSON persistence (inventory.json)
+└── internal/
+    ├── inventory/        # Domain logic — structs, CRUD, file I/O
+    └── ui/               # TUI layer — tview forms, tables, event handling
+```
+
+**What it supports:**
+- Load inventory from `data/inventory.json`
+- Display current inventory in a TUI table
+- Add a new item with name and stock quantity
+- Delete an item by index
+- Persist inventory changes back to `data/inventory.json`
+
+**Concepts covered:**
+- Clean architecture and package separation (`internal/`)
+- Single Responsibility Principle applied to a real refactor
+- Terminal UI with `tview`
+- Tabular formatting with `simpletable`
+- JSON file persistence and path handling
+- Slice mutation and index-based CRUD operations
+- Error handling and interactive form input
+
+**Run the app:**
+```bash
+cd inventory
+go run ./cmd
+```
+
+**Behavior:**
+If `data/inventory.json` does not exist, the app starts with an empty inventory and saves updates automatically.
+
+---
+
 ## 🧠 Topics This Repo Will Explore
 
 | Area | Status |
 |---|---|
-| Structs, methods, interfaces | ✅ Started (`todocli`) |
-| Error handling patterns | ✅ Started (`todocli`) |
-| File I/O & JSON | ✅ Started (`todocli`) |
+| Structs, methods, interfaces | ✅ Started (`todocli`, `inventory`) |
+| Error handling patterns | ✅ Started (`todocli`, `inventory`) |
+| File I/O & JSON | ✅ Started (`todocli`, `inventory`) |
+| CLI / TUI input handling | ✅ Started (`inventory`) |
+| Clean architecture & package design | ✅ Started (`inventory`) |
 | CLI argument parsing (`flag`, `cobra`) | 🔜 Planned |
 | Concurrency (`goroutines`, `channels`) | 🔜 Planned |
 | HTTP servers & REST APIs | 🔜 Planned |
@@ -105,11 +150,15 @@ Each mini-project lives in its own package directory. To run or test one:
 # Navigate to a project
 cd todocli
 
+go run ./cmd/todo -list
+
+# Or switch to the inventory app
+cd ../inventory
+
+go run ./cmd
+
 # Run tests (if available)
 go test ./...
-
-# Or integrate the package in a main.go at the repo root
-go run main.go
 ```
 
 ---
