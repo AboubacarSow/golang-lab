@@ -1,16 +1,15 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"pokedex/internal/pokeapi"
 )
 
 func callbackMapBack(cf *config) error {
 	if cf.previousLocationsUrl == nil{
-		fmt.Println("No previous! You're in the first page")
-		return nil
+		return errors.New("No previous! You're in the first page")
 	}
-	resp, err := pokeapi.ListLocationAreas(cf.pokeapiClient, cf.previousLocationsUrl)
+	resp, err := cf.pokeapiClient.ListLocationAreas(cf.previousLocationsUrl)
 	if err != nil {
 		return err
 	}

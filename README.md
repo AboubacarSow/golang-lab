@@ -12,6 +12,7 @@ A hands-on learning repository for experimenting with **Go (Golang)**. This proj
 golang-lab/
 ├── todocli/           # CLI-based Todo manager (file persistence, CRUD)
 ├── inventory/         # Terminal inventory manager with TUI and JSON persistence
+├── pokedex/           # In-progress PokeAPI exploration CLI with cache and exploration features planned
 └── README.md
 ```
 
@@ -108,6 +109,31 @@ go run ./cmd
 
 **Behavior:**
 If `data/inventory.json` does not exist, the app starts with an empty inventory and saves updates automatically.
+
+---
+
+### 3. `pokedex` — In-Progress PokeAPI Exploration CLI
+
+`pokedex` is a work-in-progress CLI tool for exploring Pokémon data via the PokeAPI.
+
+**Current status:**
+- The core REPL and command handling are present
+- Several intended features remain unfinished
+- Cache support, richer exploration commands, and improved data navigation are not yet implemented
+
+**Planned or incomplete features:**
+- Local caching of API results to reduce repeated network requests
+- Exploration commands for locations, areas, and Pokémon details
+- Better error handling and invalid command feedback
+- More complete documentation and usage examples
+
+**Run the app:**
+```bash
+cd pokedex
+go run .
+```
+
+> Note: `pokedex` is still under active development and is not yet feature-complete.
 
 ---
 

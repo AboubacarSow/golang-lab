@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func ListLocationAreas(client *Client, pagUrl *string) (Response, error) {
+func(client *Client) ListLocationAreas( pagUrl *string) (Response, error) {
 	endpoint := "/location-area"
 	fullUrl := baseUrl + endpoint
 
