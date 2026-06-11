@@ -1,7 +1,18 @@
 package main
 
-import "fmt"
+import "pokedex/internal/pokeapi"
 
-func main(){
-	fmt.Println("Hello world - Pokedex cli application")
+type config struct {
+	pokeapiClient *pokeapi.Client
+	nextLocationAreasUrl *string
+	previousLocationsUrl *string
+}
+func buildConfif() *config{
+	return &config{
+		pokeapiClient: pokeapi.NewClient(),
+	}
+}
+func main() {
+	cf:=buildConfif()
+	startRepl(cf)
 }
