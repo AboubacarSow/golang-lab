@@ -1,18 +1,22 @@
 package main
 
-import "pokedex/internal/pokeapi"
+import (
+	"pokedex/internal/pokeapi"
+	"time"
+)
 
 type config struct {
 	pokeapiClient *pokeapi.Client
 	nextLocationAreasUrl *string
 	previousLocationsUrl *string
 }
-func buildConfif() *config{
+func buildConfif(interval time.Duration) *config{
 	return &config{
-		pokeapiClient: pokeapi.NewClient(),
+		pokeapiClient: pokeapi.NewClient(interval),
 	}
 }
 func main() {
-	cf:=buildConfif()
+	var duration = 45 * time.Second
+	cf:=buildConfif(duration)
 	startRepl(cf)
 }

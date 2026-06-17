@@ -7,7 +7,7 @@ import (
 
 func callbackMapBack(cf *config) error {
 	if cf.previousLocationsUrl == nil{
-		return errors.New("No previous! You're in the first page")
+		return errors.New("No previous! You're in the first page\n")
 	}
 	resp, err := cf.pokeapiClient.ListLocationAreas(cf.previousLocationsUrl)
 	if err != nil {
