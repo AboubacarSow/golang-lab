@@ -1,18 +1,21 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	
+)
 
 func callbackPokedex(cf *config, args ...string) error {
-
-	size := len(cf.caugthPokemon)
-	if size == 0 {
-		return fmt.Errorf("Not Pokemon caught yet!\n")
+	if len(cf.caugthPokemon) == 0 {
+		return fmt.Errorf("No Pokemon caught yet!\n")
 	}
-	fmt.Println("List of pokemon caught:")
+	fmt.Println("Pokedex:")
 	index := 0
 	for _, pokemon := range cf.caugthPokemon {
 		index++
-		fmt.Printf("%d. %s\n", index, pokemon.Name)
+		fmt.Printf("- %d. %s\n", index, pokemon.Name)
 	}
 	return nil
 }
+
+
