@@ -6,17 +6,18 @@ import (
 )
 
 type config struct {
-	pokeapiClient *pokeapi.Client
+	pokeapiClient        *pokeapi.Client
 	nextLocationAreasUrl *string
 	previousLocationsUrl *string
 }
-func buildConfif(interval time.Duration) *config{
+
+func buildConfif(interval time.Duration) *config {
 	return &config{
 		pokeapiClient: pokeapi.NewClient(interval),
 	}
 }
 func main() {
 	var duration = 45 * time.Second
-	cf:=buildConfif(duration)
+	cf := buildConfif(duration)
 	startRepl(cf)
 }

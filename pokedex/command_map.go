@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-func callbackMap(cf *config) error {
+func callbackMap(cf *config,args ...string) error {
 
 	resp, err := cf.pokeapiClient.ListLocationAreas(cf.nextLocationAreasUrl)
 	if err != nil {

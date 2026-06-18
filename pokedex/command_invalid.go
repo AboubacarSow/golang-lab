@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func callbackInvalid(c *config) error {
+func callbackInvalid(c *config,args ...string) error {
 	fmt.Println("Invalid command!")
 	fmt.Println("---- Here are available commands: ------")
 	commands := getCommands()

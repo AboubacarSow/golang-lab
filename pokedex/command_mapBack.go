@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func callbackMapBack(cf *config) error {
+func callbackMapBack(cf *config,args ...string) error {
 	if cf.previousLocationsUrl == nil{
 		return errors.New("No previous! You're in the first page\n")
 	}

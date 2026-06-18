@@ -8,7 +8,7 @@ import (
 
 type Client struct {
 	httpClient http.Client
-	Cache      pokecache.Cache
+	Cache      *pokecache.Cache
 }
 
 const baseUrl = "https://pokeapi.co/api/v2"

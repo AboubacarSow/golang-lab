@@ -1,6 +1,7 @@
 package pokecache
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -14,17 +15,16 @@ type Cache struct {
 	Interval time.Duration
 }
 
-func New(interval time.Duration) Cache {
-	return Cache{
-		Entries: make(map[string]CacheEntry),
+func New(interval time.Duration) *Cache {
+	c := &Cache{
+		Entries:  make(map[string]CacheEntry),
 		Interval: interval,
 	}
+	go c.reapLoop()
+	return c
 }
 func (c *Cache) Get(key string) ([]byte, bool) {
 	val, ok := c.Entries[key]
-	if !ok == true {
-		return nil, ok
-	}
 	return val.data, ok
 }
 
@@ -35,12 +35,27 @@ func (c *Cache) Add(val []byte, key string) {
 	}
 }
 
-func (c *Cache) reap() {
+func (c *Cache) reaploop() {
+	for t := range time.Tick(c.Interval) {
+		c.reap()
+		fmt.Printf("Timer ticked. t==%v\n", t)
+	}
 
+}
+func (c *Cache) reapLoop() {
+	timer := time.NewTicker(c.Interval)
+
+	for range timer.C {
+		c.reap()
+	}
+}
+
+func (c *Cache) reap() {
 	current := time.Now().UTC().Add(-c.Interval)
 	for k, entry := range c.Entries {
 		if entry.created_at.Before(current) {
 			delete(c.Entries, k)
+			
 		}
 	}
 }

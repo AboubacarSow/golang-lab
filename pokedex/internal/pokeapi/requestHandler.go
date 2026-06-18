@@ -15,7 +15,7 @@ func (client *Client) ListLocationAreas(pagUrl *string) (Response, error) {
 		fullUrl = *pagUrl
 	}
 	data, ok := client.Cache.Get(fullUrl)
-	if !ok == true {
+	if !ok {
 		fmt.Print("--- CACHE MISSED ---\n")
 		req, err := http.NewRequest("GET", fullUrl, nil)
 		if err != nil {
@@ -47,5 +47,42 @@ func (client *Client) ListLocationAreas(pagUrl *string) (Response, error) {
 	}
 
 	return response, nil
+
+}
+
+func (client *Client) GetLocationArea(locationAreaName string) (LocationArea, error) {
+	endpoint := "/location-area/" + locationAreaName
+	fullUrl := baseUrl + endpoint
+
+	data, ok := client.Cache.Get(fullUrl)
+	if !ok {
+		req, err := http.NewRequest("GET", fullUrl, nil)
+		if err != nil {
+			return LocationArea{}, nil
+		}
+
+		resp, err := client.httpClient.Do(req)
+		if err != nil {
+			return LocationArea{}, nil
+		}
+		if resp.StatusCode > 399 {
+			return LocationArea{}, fmt.Errorf("Bad request. Status code %d", resp.StatusCode)
+		}
+		defer resp.Body.Close()
+
+		data, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return LocationArea{}, nil
+		}
+		client.Cache.Add(data, fullUrl)
+	} 
+
+	locationArea := LocationArea{}
+	err := json.Unmarshal(data, &locationArea)
+	if err != nil {
+		return LocationArea{}, fmt.Errorf("Failed to unmarshall data:%s", err)
+	}
+
+	return locationArea, nil
 
 }
