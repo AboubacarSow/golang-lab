@@ -16,7 +16,6 @@ func (client *Client) ListLocationAreas(pagUrl *string) (Response, error) {
 	}
 	data, ok := client.Cache.Get(fullUrl)
 	if !ok {
-		fmt.Print("--- CACHE MISSED ---\n")
 		req, err := http.NewRequest("GET", fullUrl, nil)
 		if err != nil {
 			return Response{}, nil
@@ -36,8 +35,6 @@ func (client *Client) ListLocationAreas(pagUrl *string) (Response, error) {
 			return Response{}, nil
 		}
 		client.Cache.Add(data, fullUrl)
-	} else {
-		fmt.Print("--- CACHE HIT ---\n")
 	}
 
 	response := Response{}
@@ -75,7 +72,7 @@ func (client *Client) GetLocationArea(locationAreaName string) (LocationArea, er
 			return LocationArea{}, nil
 		}
 		client.Cache.Add(data, fullUrl)
-	} 
+	}
 
 	locationArea := LocationArea{}
 	err := json.Unmarshal(data, &locationArea)
@@ -84,5 +81,42 @@ func (client *Client) GetLocationArea(locationAreaName string) (LocationArea, er
 	}
 
 	return locationArea, nil
+
+}
+
+func (client *Client) GetPokeman(pokemanName string) (Pokemon, error) {
+	endpoint := "/pokemon/" + pokemanName
+	fullUrl := baseUrl + endpoint
+
+	data, ok := client.Cache.Get(fullUrl)
+	if !ok {
+		req, err := http.NewRequest("GET", fullUrl, nil)
+		if err != nil {
+			return Pokemon{}, nil
+		}
+
+		resp, err := client.httpClient.Do(req)
+		if err != nil {
+			return Pokemon{}, nil
+		}
+		if resp.StatusCode > 399 {
+			return Pokemon{}, fmt.Errorf("Bad request. Status code %d\n", resp.StatusCode)
+		}
+		defer resp.Body.Close()
+
+		data, err = io.ReadAll(resp.Body)
+		if err != nil {
+			return Pokemon{}, nil
+		}
+		client.Cache.Add(data, fullUrl)
+	}
+
+	pokeman := Pokemon{}
+	err := json.Unmarshal(data, &pokeman)
+	if err != nil {
+		return Pokemon{}, fmt.Errorf("Failed to unmarshall data:%s", err)
+	}
+
+	return pokeman, nil
 
 }

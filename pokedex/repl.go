@@ -30,8 +30,8 @@ func startRepl(cf *config) {
 			(availableCommands["invalid"]).callback(cf)
 			continue
 		}
-		if err := command.callback(cf,args...); err != nil {
-			fmt.Printf("Something went wrong:%v", err)
+		if err := command.callback(cf, args...); err != nil {
+			fmt.Printf("%v", err)
 		}
 	}
 }
@@ -49,16 +49,6 @@ func getCommands() map[string]cliCommmand {
 			description: "Prints the help menu",
 			callback:    callbackHelp,
 		},
-		"invalid": {
-			name:        "invalid command",
-			description: "Displayed when user type unavailabe command",
-			callback:    callbackInvalid,
-		},
-		"exit": {
-			name:        "exit",
-			description: "Turns off Pokedex",
-			callback:    callbackExit,
-		},
 		"map": {
 			name:        "map",
 			description: "Display some location areas",
@@ -70,9 +60,29 @@ func getCommands() map[string]cliCommmand {
 			callback:    callbackMapBack,
 		},
 		"explore": {
-			name:        "explore",
-			description: "Display Location Area by Name",
+			name:        "explore {location_area_name}",
+			description: "Display Pokenam name for given location area",
 			callback:    callbackExplore,
+		},
+		"catch": {
+			name:        "catch {pokeman_name}",
+			description: "Attempt to catch pokeman!",
+			callback:    callbackCatch,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "View all caught Pokémon during catch attempts",
+			callback:    callbackPokedex,
+		},
+		"invalid": {
+			name:        "invalid command",
+			description: "Displayed when user type unavailabe command",
+			callback:    callbackInvalid,
+		},
+		"exit": {
+			name:        "exit",
+			description: "Turns off Pokedex",
+			callback:    callbackExit,
 		},
 	}
 
