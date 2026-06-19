@@ -2,6 +2,7 @@ package pokecache
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -13,6 +14,7 @@ type CacheEntry struct {
 type Cache struct {
 	Entries  map[string]CacheEntry
 	Interval time.Duration
+	sync.RWMutex
 }
 
 func New(interval time.Duration) *Cache {
@@ -24,11 +26,17 @@ func New(interval time.Duration) *Cache {
 	return c
 }
 func (c *Cache) Get(key string) ([]byte, bool) {
+	c.RLock()
+
+	defer c.RUnlock()
 	val, ok := c.Entries[key]
 	return val.data, ok
 }
 
 func (c *Cache) Add(val []byte, key string) {
+	c.Lock()
+
+	defer c.Unlock()
 	c.Entries[key] = CacheEntry{
 		data:       val,
 		created_at: time.Now().UTC(),
@@ -52,6 +60,9 @@ func (c *Cache) reapLoop() {
 
 func (c *Cache) reap() {
 	current := time.Now().UTC().Add(-c.Interval)
+	c.Lock()
+
+	defer c.Unlock()
 	for k, entry := range c.Entries {
 		if entry.created_at.Before(current) {
 			delete(c.Entries, k)

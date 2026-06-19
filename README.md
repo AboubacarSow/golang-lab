@@ -112,20 +112,23 @@ If `data/inventory.json` does not exist, the app starts with an empty inventory 
 
 ---
 
-### 3. `pokedex` — In-Progress PokeAPI Exploration CLI
+### 3. `pokedex` — PokeAPI REPL CLI (in-progress)
 
-`pokedex` is a work-in-progress CLI tool for exploring Pokémon data via the PokeAPI.
+`pokedex` is a REPL-based command-line tool for exploring Pokémon data using the public PokeAPI (https://pokeapi.co/).
 
-**Current status:**
-- The core REPL and command handling are present
-- Several intended features remain unfinished
-- Cache support, richer exploration commands, and improved data navigation are not yet implemented
+**What it does:**
+- Provides an interactive REPL for listing location areas, exploring which Pokémon appear in an area, attempting to "catch" Pokémon, and viewing a local list of caught Pokémon.
+- Uses an internal `pokeapi` client (`internal/pokeapi`) and a simple in-memory cache implementation (`internal/pokecache`).
 
-**Planned or incomplete features:**
-- Local caching of API results to reduce repeated network requests
-- Exploration commands for locations, areas, and Pokémon details
-- Better error handling and invalid command feedback
-- More complete documentation and usage examples
+**Available REPL commands:**
+- `help` — show the help menu and available commands
+- `map` — list location areas (paginated)
+- `mapback` — show the previous page of location areas
+- `explore {location_area_name}` — list Pokémon encountered in the given location area
+- `catch {pokemon_name}` — attempt to catch a Pokémon by name (simple probability check)
+- `pokedex` — list all caught Pokémon
+- `inspect {pokemon_name}` — show detailed information for a caught Pokémon
+- `exit` — exit the REPL
 
 **Run the app:**
 ```bash
@@ -133,7 +136,49 @@ cd pokedex
 go run .
 ```
 
-> Note: `pokedex` is still under active development and is not yet feature-complete.
+Once running, type `help` to see usage. Example REPL session:
+```
+> map
+- pallet-town
+- viridian-forest
+> explore viridian-forest
+Pokeman in :viridian-forest
+- pidgey
+- rattata
+> catch pidgey
+pidgey pokeman was catched
+> pokedex
+Pokedex:
+- 1. pidgey
+> inspect pidgey
+pidgey Information Details:
+Height:3
+Weight:18
+...
+```
+
+**Implementation notes & internal layout**
+- **Client:** `pokedex/internal/pokeapi` — wraps HTTP calls (`net/http`) to fetch location areas and Pokémon details from PokeAPI; defines JSON structs for unmarshalling responses.
+- **Cache:** `pokedex/internal/pokecache` — a concurrent, TTL-based in-memory cache:
+  - Uses `sync.RWMutex` to protect concurrent reads/writes to the cache map.
+  - Spawns a background goroutine (`reapLoop()`) that runs on a ticker to evict expired entries every `interval`.
+  - `Add(val []byte, key string)` stores entries with a timestamp; `Get(key string)` retrieves them.
+  - Entries are considered expired if they were created more than `interval` ago.
+- **Entry point:** `pokedex/main.go` sets up a `config` struct (default cache TTL = 45s) and starts the interactive REPL in `repl.go`.
+
+**Concepts demonstrated:**
+- **Concurrency:** background goroutine using `time.Ticker` for periodic cache reaping.
+- **Synchronization:** `sync.RWMutex` ensures safe concurrent access to the cache from multiple goroutines.
+- **HTTP networking:** `net/http.Client` with a 1-minute timeout for API calls.
+- **TTL caching:** time-based entry expiration and automatic cleanup.
+
+**Known issues / TODOs**
+- The project is actively developed; expect rough edges and incomplete error handling.
+- **pokecache.go:** There are two versions of the reap loop (`reaploop()` and `reapLoop()`); only one should be active.
+- Pagination and richer navigation could be improved (page links are stored in the `config`).
+
+**Tests & exploration**
+- There is a small test harness in `pokedex/repl_test.go` to guide behavior-driven checks.
 
 ---
 
@@ -142,14 +187,16 @@ go run .
 | Area | Status |
 |---|---|
 | Structs, methods, interfaces | ✅ Started (`todocli`, `inventory`) |
-| Error handling patterns | ✅ Started (`todocli`, `inventory`) |
+| Error handling patterns | ✅ Started (`todocli`, `inventory`, `pokedex`) |
 | File I/O & JSON | ✅ Started (`todocli`, `inventory`) |
 | CLI / TUI input handling | ✅ Started (`inventory`) |
-| Clean architecture & package design | ✅ Started (`inventory`) |
+| Clean architecture & package design | ✅ Started (`inventory`, `pokedex`) |
+| HTTP clients & REST APIs | ✅ Started (`pokedex` via PokeAPI client) |
+| Concurrency (`goroutines`, `sync`, `time.Ticker`) | ✅ Started (`pokedex` via pokecache background reaping) |
+| In-memory caching & TTL strategies | ✅ Started (`pokedex` via pokecache) |
 | CLI argument parsing (`flag`, `cobra`) | 🔜 Planned |
-| Concurrency (`goroutines`, `channels`) | 🔜 Planned |
-| HTTP servers & REST APIs | 🔜 Planned |
-| Middleware & routing | 🔜 Planned |
+| HTTP servers & routing | 🔜 Planned |
+| Channels & select | 🔜 Planned |
 | Database access (`database/sql`, GORM) | 🔜 Planned |
 | Testing (`testing` package, table-driven tests) | 🔜 Planned |
 | Context & cancellation | 🔜 Planned |
