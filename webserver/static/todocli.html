@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>todocli — Golang Lab</title>
+	<meta name="description" content="todocli project details for the golang-lab webserver." />
+	<style>
+		:root{--bg:#0f1724;--card:#111827;--muted:#9ca3af;--accent:#06b6d4;--glass:rgba(255,255,255,0.04)}
+		*{box-sizing:border-box}
+		html,body{min-height:100%}
+		body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6;background:linear-gradient(180deg,#071029 0%, #07162a 100%);-webkit-font-smoothing:antialiased}
+		header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;max-width:1100px;margin:0 auto}
+		.brand{display:flex;align-items:center;gap:.75rem}
+		.logo{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#021125;font-weight:700}
+		nav a{color:var(--muted);text-decoration:none;margin-left:1rem;font-size:.95rem}
+		.container{max-width:1100px;margin:2rem auto;padding:0 1.25rem}
+		.hero-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:2rem;box-shadow:0 6px 24px rgba(2,6,23,0.6);backdrop-filter:blur(6px)}
+		h1{margin:0;font-size:clamp(1.5rem,3.5vw,2.4rem);line-height:1.05;color:#f8fafc}
+		p.lead{color:var(--muted);margin:.8rem 0 1.2rem}
+		p{color:#d1d5db;line-height:1.75}
+		ul{color:#d1d5db;margin:0 0 1rem 1.2rem;line-height:1.8}
+		code{background:rgba(255,255,255,0.06);padding:.15rem .35rem;border-radius:6px;color:#d6bcfa}
+		pre{background:#071727;color:#cdeef6;padding:1rem;border-radius:8px;overflow:auto}
+		.footer{margin-top:2rem;color:var(--muted);text-align:center}
+		.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:#021125;padding:.75rem 1rem;border-radius:10px;border:0;font-weight:600;text-decoration:none}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="brand">
+			<div class="logo">TD</div>
+			<div>
+				<div style="font-weight:700;color:#f8fafc">todocli</div>
+				<div style="font-size:.8rem;color:var(--muted);margin-top:2px">CLI todo manager</div>
+			</div>
+		</div>
+		<nav>
+			<a href="/">Home</a>
+			<a href="/about.html">About</a>
+		</nav>
+	</header>
+
+	<main class="container">
+		<div class="hero-card">
+			<h1>todocli — CLI Todo Manager</h1>
+			<p class="lead">A command-line todo app demonstrating idiomatic Go, JSON persistence, and pipe-friendly input handling.</p>
+
+			<h2 style="margin-top:1.75rem">Overview</h2>
+			<p>The todocli mini-project provides a small todo manager with add, list, complete, and delete operations. It stores tasks in <code>todos.json</code> and uses standard library packages only.</p>
+
+			<h2>Features</h2>
+			<ul>
+				<li>Add todos with command flags</li>
+				<li>List active and completed todos</li>
+				<li>Mark tasks complete</li>
+				<li>Delete items by index</li>
+				<li>Support for piped todo input</li>
+			</ul>
+
+			<h2>Concepts</h2>
+			<ul>
+				<li>CLI flag handling</li>
+				<li>JSON encoding and decoding</li>
+				<li>File I/O and persistence</li>
+				<li>Slice manipulation and pointer semantics</li>
+			</ul>
+
+			<h2>Run locally</h2>
+			<pre><code>cd ../todocli
+go run ./cmd/todo -list
+go run ./cmd/todo -add "Buy groceries"
+go run ./cmd/todo -complete 1
+go run ./cmd/todo -delete 1</code></pre>
+			<p>Pipe input:</p>
+			<pre><code>echo "Buy groceries" | go run ./cmd/todo -add</code></pre>
+
+			<h2>Structure</h2>
+			<ul>
+				<li><code>cmd/todo/</code> — CLI entry point and command parsing</li>
+				<li><code>todo.go</code> — todo model and persistence logic</li>
+				<li><code>todos.json</code> — storage file for tasks</li>
+			</ul>
+
+			<h2>Why it matters</h2>
+			<p>todocli is a compact example of building CLI tooling with Go and managing state in a file, which makes it a nice first project for learning standard library patterns.</p>
+
+			<div class="footer">
+				<a class="btn" href="/">Back to home</a>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

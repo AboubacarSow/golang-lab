@@ -28,6 +28,7 @@ golang-lab/
 ├── todocli/        # CLI Todo Manager (JSON persistence)
 ├── inventory/      # TUI Inventory Manager (Clean Architecture)
 ├── pokedex/        # REPL-based PokeAPI explorer (HTTP + cache)
+├── webserver/      # Static file server with project pages
 └── README.md
 ```
 
@@ -189,6 +190,56 @@ go run .
 
 ---
 
+## 4. webserver — Static File Server
+
+A minimal HTTP server serving static files from a `/static` folder, with project documentation pages for all golang-lab mini-projects.
+
+### Features
+
+* Serve static HTML pages from `/static`
+* Project detail pages for each golang-lab mini-project
+* Landing page with project grid and quick-start guide
+* About page with repository overview
+
+### Concepts
+
+* HTTP server with `net/http.FileServer`
+* Static file serving
+* Clean HTML structure and styling
+* Simple routing for project documentation
+
+### Structure
+
+```
+webserver/
+├── server.go       # HTTP server entry point
+└── static/
+    ├── index.html     # Landing page with project grid
+    ├── about.html     # Repository information
+    ├── todocli.html   # todocli project page
+    ├── inventory.html # Inventory project page
+    └── pokedex.html   # Pokedex project page
+```
+
+### Run
+
+```bash
+cd webserver
+go run server.go
+```
+
+Then open `http://localhost:8080/` in your browser.
+
+### Screenshot
+
+![Webserver index page](assets/index.png)
+
+### Why it matters
+
+This project demonstrates how to use Go's standard library to serve static files and create a simple web interface for documenting other projects. Each project has a dedicated page accessible from the homepage grid.
+
+---
+
 ##  Roadmap
 
 ### Completed
@@ -196,9 +247,11 @@ go run .
 * CLI applications
 * JSON persistence
 * HTTP clients
+* HTTP servers (net/http)
 * Concurrency basics
 * Mutex usage
 * TTL cache design
+* Static file serving
 
 ### In Progress
 
@@ -207,7 +260,6 @@ go run .
 
 ### Planned
 
-* HTTP servers (net/http)
 * Middleware design
 * Database integration (SQL / GORM)
 * Worker pools
@@ -237,6 +289,12 @@ go run .
 * Concurrency
 * Cache systems
 * REPL design
+
+### webserver
+
+* Static file serving
+* Web documentation
+* Simple HTTP routing
 
 ---
 

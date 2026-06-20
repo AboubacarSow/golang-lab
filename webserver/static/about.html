@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>About — Golang Lab</title>
+	<meta name="description" content="About the golang-lab webserver examples and how to use them." />
+	<style>
+		body{font-family:Inter,system-ui,Segoe UI,Roboto,Arial;margin:0;background:linear-gradient(180deg,#071029,#07162a);color:#e6eef6}
+		.wrap{max-width:900px;margin:3rem auto;padding:1.25rem}
+		a{color:#06b6d4}
+		.card{background:#0b1220;border-radius:10px;padding:1.25rem;border:1px solid rgba(255,255,255,0.03)}
+		h1{margin:0 0 .5rem}
+		p.lead{color:#9ca3af}
+		ul{color:#cbd5e1}
+		pre{background:#071727;color:#cdeef6;padding:1rem;border-radius:6px;overflow:auto}
+		footer{text-align:center;color:#9ca3af;margin-top:2rem}
+	</style>
+</head>
+<body>
+	<div class="wrap">
+		<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+			<div>
+				<h1>About Golang Lab</h1>
+				<div class="lead" style="color:#9ca3af">Small examples showing how to serve static files and simple endpoints using Go's standard library.</div>
+			</div>
+			<div style="text-align:right;color:#9ca3af">v1 · Demo</div>
+		</div>
+
+		<div class="card">
+			<h2 style="margin-top:0">Purpose</h2>
+			<p class="lead">This repository is a lightweight playground for learning Go's built-in HTTP server and for experimenting with static file serving, routing, and tiny APIs without external dependencies.</p>
+
+			<h2>Quick start</h2>
+			<p>Place files in the <strong>/static</strong> folder (this page is <strong>/static/about.html</strong>), then run your server and open <strong>http://localhost:8080/</strong>.</p>
+
+			<pre><code>// Example main.go
+package main
+
+import (
+	"log"
+	"net/http"
+)
+
+func main(){
+	fs := http.FileServer(http.Dir("./static"))
+	http.Handle("/", fs)
+	log.Println("Listening on :8080")
+	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+			</code></pre>
+
+			<h2>What you'll find here</h2>
+			<ul>
+				<li>Simple static HTML pages (index, about).</li>
+				<li>Ready-to-run Go server examples using only the standard library.</li>
+				<li>A small base for adding JSON endpoints, templates, or middleware.</li>
+			</ul>
+
+			<h2>Extending the project</h2>
+			<p>To add routes or JSON APIs, replace the default handler registration with a router or add custom <code>http.HandleFunc</code> handlers. The standard library is intentionally simple and great for learning.</p>
+
+			<h2>Contributing</h2>
+			<p>Feel free to open issues or PRs with small examples, improvements, or documentation patches. Keep changes focused and easy to review.</p>
+
+			<h2>License</h2>
+			<p>Copy, adapt, and learn — use whatever license you prefer. If you plan to publish, add a LICENSE file to the repo.</p>
+		</div>
+
+		<footer>
+			<div style="margin-top:1rem;color:#9ca3af">Back to <a href="/">home</a></div>
+		</footer>
+	</div>
+</body>
+</html>

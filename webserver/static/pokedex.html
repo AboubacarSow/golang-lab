@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Pokedex — Golang Lab</title>
+	<meta name="description" content="Pokedex project details for the golang-lab webserver." />
+	<style>
+		:root{--bg:#0f1724;--card:#111827;--muted:#9ca3af;--accent:#06b6d4;--glass:rgba(255,255,255,0.04)}
+		*{box-sizing:border-box}
+		html,body{min-height:100%}
+		body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6;background:linear-gradient(180deg,#071029 0%, #07162a 100%);-webkit-font-smoothing:antialiased}
+		header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;max-width:1100px;margin:0 auto}
+		.brand{display:flex;align-items:center;gap:.75rem}
+		.logo{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#021125;font-weight:700}
+		nav a{color:var(--muted);text-decoration:none;margin-left:1rem;font-size:.95rem}
+		.container{max-width:1100px;margin:2rem auto;padding:0 1.25rem}
+		.hero-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:2rem;box-shadow:0 6px 24px rgba(2,6,23,0.6);backdrop-filter:blur(6px)}
+		h1{margin:0;font-size:clamp(1.5rem,3.5vw,2.4rem);line-height:1.05;color:#f8fafc}
+		p.lead{color:var(--muted);margin:.8rem 0 1.2rem}
+		p{color:#d1d5db;line-height:1.75}
+		ul{color:#d1d5db;margin:0 0 1rem 1.2rem;line-height:1.8}
+		code{background:rgba(255,255,255,0.06);padding:.15rem .35rem;border-radius:6px;color:#d6bcfa}
+		pre{background:#071727;color:#cdeef6;padding:1rem;border-radius:8px;overflow:auto}
+		.footer{margin-top:2rem;color:var(--muted);text-align:center}
+		.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:#021125;padding:.75rem 1rem;border-radius:10px;border:0;font-weight:600;text-decoration:none}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="brand">
+			<div class="logo">PD</div>
+			<div>
+				<div style="font-weight:700;color:#f8fafc">Pokedex</div>
+				<div style="font-size:.8rem;color:var(--muted);margin-top:2px">REPL-based PokeAPI explorer</div>
+			</div>
+		</div>
+		<nav>
+			<a href="/">Home</a>
+			<a href="/about.html">About</a>
+		</nav>
+	</header>
+
+	<main class="container">
+		<div class="hero-card">
+			<h1>Pokedex — REPL PokeAPI Explorer</h1>
+			<p class="lead">A REPL CLI that talks to the PokeAPI, caches data, and manages a local pokedex with inspect and catch commands.</p>
+
+			<h2 style="margin-top:1.75rem">Overview</h2>
+			<p>The Pokedex project is an interactive command-line explorer for Pokémon location areas and captures. It demonstrates HTTP client usage, cache TTL handling, mutex synchronization, and REPL design in Go.</p>
+
+			<h2>Features</h2>
+			<ul>
+				<li>Explore PokeAPI location areas</li>
+				<li>List and catch Pokémon with probability-based capture</li>
+				<li>Inspect caught Pokémon details</li>
+				<li>Local pokedex storage and paginated navigation</li>
+			</ul>
+
+			<h2>Concepts</h2>
+			<ul>
+				<li>HTTP client integration with <code>net/http</code></li>
+				<li>JSON decoding and API modeling</li>
+				<li>Concurrent cache cleanup with goroutines</li>
+				<li>Mutex-protected cache state</li>
+				<li>REPL command handling and user interaction</li>
+			</ul>
+
+			<h2>Run locally</h2>
+			<pre><code>cd ../pokedex
+go run .</code></pre>
+
+			<h2>Structure</h2>
+			<ul>
+				<li><code>main.go</code> — program entry and REPL setup</li>
+				<li><code>repl.go</code> — interactive engine and command loop</li>
+				<li><code>internal/pokeapi/</code> — PokeAPI client and request handling</li>
+				<li><code>internal/pokecache/</code> — cache layer with TTL and mutex</li>
+			</ul>
+
+			<h2>Why it matters</h2>
+			<p>This project is ideal for learning real-world API integration in Go while keeping the user experience interactive. It also shows how caching and concurrency can improve the responsiveness of a CLI tool.</p>
+
+			<div class="footer">
+				<a class="btn" href="/">Back to home</a>
+			</div>
+		</div>
+	</main>
+</body>
+</html>

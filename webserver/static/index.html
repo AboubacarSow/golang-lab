@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Golang Lab — Webserver</title>
+	<meta name="description" content="A minimal static landing page for the golang-lab webserver." />
+	<style>
+		:root{--bg:#0f1724;--card:#111827;--muted:#9ca3af;--accent:#06b6d4;--glass:rgba(255,255,255,0.04)}
+		*{box-sizing:border-box}
+		html,body{height:100%}
+		body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6;background:linear-gradient(180deg,#071029 0%, #07162a 100%);-webkit-font-smoothing:antialiased}
+		header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;max-width:1100px;margin:0 auto}
+		.brand{display:flex;align-items:center;gap:.75rem}
+		.logo{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#021125;font-weight:700}
+		nav a{color:var(--muted);text-decoration:none;margin-left:1rem;font-size:.95rem}
+		.container{max-width:1100px;margin:2rem auto;padding:0 1.25rem}
+		.hero{display:grid;grid-template-columns:1fr;gap:1.5rem;align-items:center}
+		.hero-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:2rem;box-shadow:0 6px 24px rgba(2,6,23,0.6);backdrop-filter:blur(6px)}
+		h1{margin:0;font-size:clamp(1.5rem,3.5vw,2.25rem);line-height:1.05;color:#f8fafc}
+		p.lead{color:var(--muted);margin:.6rem 0 1.2rem}
+		.cta{display:inline-flex;gap:.75rem}
+		.btn{background:var(--accent);color:#021125;padding:.6rem .9rem;border-radius:8px;border:0;font-weight:600;cursor:pointer}
+		.btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+		.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-top:1.25rem}
+		.feature{background:var(--card);border-radius:10px;padding:1rem;border:1px solid var(--glass)}
+		.feature h3{margin:.25rem 0;color:#e6eef6;font-size:1.05rem}
+		.feature p{margin:0;color:var(--muted);font-size:.92rem}
+		footer{margin-top:2.5rem;padding:1rem 0;color:var(--muted);text-align:center}
+		pre{background:#071727;color:#cdeef6;padding:1rem;border-radius:8px;overflow:auto}
+		@media(min-width:800px){.hero{grid-template-columns:1fr 420px}}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="brand">
+			<div class="logo">GL</div>
+			<div>
+				<div style="font-weight:700;color:#f8fafc">Golang Lab</div>
+				<div style="font-size:.8rem;color:var(--muted);margin-top:2px">Minimal webserver examples</div>
+			</div>
+		</div>
+		<nav>
+			<a href="#features">Features</a>
+			<a href="#example">Example</a>
+			<a href="#about">About</a>
+		</nav>
+	</header>
+
+	<main class="container">
+		<section class="hero">
+			<div class="hero-card">
+				<h1>Serve static files and small APIs with Go — fast and simple</h1>
+				<p class="lead">This repository demonstrates a tiny Go webserver that serves files from the <strong>/static</strong> folder and provides minimal endpoints for experimentation.</p>
+				<div class="cta">
+					<button class="btn" onclick="scrollToSection('example')">See example</button>
+					<a class="btn secondary" href="#about">Learn more</a>
+				</div>
+				<div class="grid" style="margin-top:1.25rem">
+					<div class="feature">
+						<h3>Easy to run</h3>
+						<p>Start the Go server locally and open this page at <strong>http://localhost:8080/</strong>.</p>
+					</div>
+					<div class="feature">
+						<h3>Static files</h3>
+						<p>All assets placed in the <strong>/static</strong> folder are served directly by the server.</p>
+					</div>
+					<div class="feature">
+						<h3>Extendable</h3>
+						<p>Add endpoints or templates to explore more advanced behavior.</p>
+					</div>
+				</div>
+			</div>
+
+			<aside class="hero-card" id="example" style="margin-top:1.75rem">
+				<h2 style="margin-top:0">Mini-Projects</h2>
+				<p style="color:var(--muted);margin-bottom:1rem">Explore each project in the golang-lab repository:</p>
+				<div class="grid">
+					<a href="/todocli.html" style="text-decoration:none">
+						<div class="feature" style="cursor:pointer;transition:all 0.2s">
+							<h3 style="color:#06b6d4">todocli</h3>
+							<p>CLI todo manager with JSON persistence.</p>
+						</div>
+					</a>
+					<a href="/inventory.html" style="text-decoration:none">
+						<div class="feature" style="cursor:pointer;transition:all 0.2s">
+							<h3 style="color:#06b6d4">inventory</h3>
+							<p>Terminal UI with clean architecture.</p>
+						</div>
+					</a>
+					<a href="/pokedex.html" style="text-decoration:none">
+						<div class="feature" style="cursor:pointer;transition:all 0.2s">
+							<h3 style="color:#06b6d4">pokedex</h3>
+							<p>REPL explorer with HTTP and cache.</p>
+						</div>
+					</a>
+				</div>
+			</aside>
+
+			<aside class="hero-card" id="code-example" style="margin-top:1.75rem">
+				<h2 style="margin-top:0">Quick Go example</h2>
+				<p style="color:var(--muted);margin:0 0 1rem .1rem">Copy this snippet into your Go app to serve this folder:</p>
+				<pre><code>// server.go
+package main
+
+import (
+	"net/http"
+	"log"
+)
+
+func main(){
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+	port := ":8080"
+	fmt.Println("Server starts running on port" + port)
+	if err := http.ListenAndServe(port, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+				</code></pre>
+				<p style="color:var(--muted);margin-top:.75rem">Then run: <strong>go run main.go</strong></p>
+			</aside>
+
+			<aside class="hero-card" id="example"  style="display:none">
+				<h2 style="margin-top:0">Quick Go example</h2>
+				<p style="color:var(--muted);margin:0 0 1rem .1rem">Copy this snippet into your Go app to serve this folder:</p>
+				<pre><code>// server.go
+package main
+
+import (
+	"net/http"
+	"log"
+)
+
+func main(){
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+	port := ":8080"
+	fmt.Println("Server starts running on port" + port)
+	if err := http.ListenAndServe(port, nil); err != nil {
+		log.Fatal(err)
+	}
+}
+				</code></pre>
+				<p style="color:var(--muted);margin-top:.75rem">Then run: <strong>go run main.go</strong></p>
+			</aside>
+		</section>
+
+		<section id="about" style="margin-top:1.75rem">
+			<div class="hero-card">
+				<h2 style="margin-top:0">About this project</h2>
+				<p class="lead">This workspace is a small playground for learning Go's standard library HTTP server and static file serving. Feel free to modify the HTML, add styles, or expand the server with JSON APIs.</p>
+				<p style="color:var(--muted);margin-top:.5rem">Built with simplicity and clarity in mind — suitable for demos and quick experiments.</p>
+			</div>
+		</section>
+
+		<footer>
+			<div>© Golang Lab — Example static site · <span id="time"></span></div>
+		</footer>
+	</main>
+
+	<script>
+		function scrollToSection(id){
+			document.getElementById(id).scrollIntoView({behavior:'smooth'});
+		}
+		document.getElementById('time').textContent = new Date().toLocaleString();
+	</script>
+</body>
+</html>
