@@ -1,23 +1,42 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
 
+	"github.com/AboubacarSow/golang-lab/rss-aggregator/internal/database"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
+
+type ApiConfig struct {
+	DB *database.Queries
+}
 
 func main() {
 
 	godotenv.Load()
 	port := os.Getenv("PORT")
 	if port == "" {
-		fmt.Printf("Unable to load .env file")
-		os.Exit(0)
+		log.Fatal("Unable to load .env file")
+	}
+	connectionString := os.Getenv("CONNECTION_STRING")
+	if connectionString == "" {
+		log.Fatal("Unable to get CONNECTION_STRING")
+	}
+
+	conn, err := sql.Open("postgres", connectionString)
+	if err != nil {
+		log.Fatal("Could not connect to database", err)
+	}
+
+	apiConfig := ApiConfig{
+		DB: database.New(conn),
 	}
 
 	router := chi.NewRouter()
@@ -33,8 +52,17 @@ func main() {
 	router.Use(corsMiddleware)
 
 	v1_router := chi.NewRouter()
+
 	v1_router.Get("/health", healthHandler)
-	v1_router.Get("/error",errorHandler)
+	v1_router.Get("/error", errorHandler)
+
+	// USER REST API ENDPOINTS
+	v1_router.Post("/users", apiConfig.createUserHandler)
+	v1_router.Get("/users", apiConfig.getUserHandler)
+	v1_router.Delete("/users/{id}", apiConfig.deleteUserHandler)
+
+	//Feed REST API ENDPOINTS
+	v1_router.Post("/feed", apiConfig.createFeedHandler)
 
 	router.Mount("/api/v1", v1_router)
 
@@ -43,7 +71,7 @@ func main() {
 		Addr:    ":" + port,
 	}
 	fmt.Printf("Server starting on port :%s\n", port)
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 
 	if err != nil {
 		log.Fatal("Error occured while starting server")

@@ -28,7 +28,7 @@ func jsonHelper(w http.ResponseWriter, statusCode int, payload interface{}) {
 		w.WriteHeader(500)
 	}
 
-	w.Header().Add("Content-Type:", "application/json")
+	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	w.Write(data)
 }
