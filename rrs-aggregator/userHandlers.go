@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AboubacarSow/golang-lab/rss-aggregator/internal/auth"
 	"github.com/AboubacarSow/golang-lab/rss-aggregator/internal/database"
 	"github.com/google/uuid"
 )
@@ -43,20 +42,7 @@ func (apiconf ApiConfig) createUserHandler(w http.ResponseWriter, r *http.Reques
 	jsonHelper(w, 201, toUserDto(new_user))
 }
 
-func (apiconf ApiConfig) getUserHandler(w http.ResponseWriter, r *http.Request) {
-	apikey, err := auth.GetApiKey(r.Header)
-
-	if err != nil {
-		errorHelper(w, 401, err.Error())
-		return
-	}
-
-	user, err := apiconf.DB.GetUserByKey(r.Context(), apikey)
-
-	if err != nil {
-		errorHelper(w, 400, fmt.Sprintf("Error while getting user with api_key=%s:%v", apikey, err))
-		return
-	}
+func getUserHandler(w http.ResponseWriter, r *http.Request, user database.User) {
 	jsonHelper(w, 200, toUserDto(user))
 }
 

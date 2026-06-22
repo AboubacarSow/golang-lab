@@ -23,6 +23,13 @@ type feed struct {
 	Url       string    `json:"url"`
 	UserId    uuid.UUID `json:"user_id"`
 }
+type follows struct {
+	ID        uuid.UUID `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	FeedId    uuid.UUID `json:"feed_id"`
+	UserId    uuid.UUID `json:"user_id"`
+}
 
 func toUserDto(databaseUser database.User) user {
 	return user{
@@ -34,16 +41,45 @@ func toUserDto(databaseUser database.User) user {
 	}
 }
 
-
 func toFeedDto(databaseFeed database.Feed) feed {
 	return feed{
-		ID:        	databaseFeed.ID,
-		CreatedAt: 	databaseFeed.CreatedAt,
-		UpdatedAt: 	databaseFeed.UpdatedAt,
-		Name:      	databaseFeed.Name.String,
-		Url : 		databaseFeed.Url,
-		UserId:    	databaseFeed.UserID,
+		ID:        databaseFeed.ID,
+		CreatedAt: databaseFeed.CreatedAt,
+		UpdatedAt: databaseFeed.UpdatedAt,
+		Name:      databaseFeed.Name.String,
+		Url:       databaseFeed.Url,
+		UserId:    databaseFeed.UserID,
 	}
+}
+
+func toFeedDtos(Feeds []database.Feed) []feed {
+	feeds := []feed{}
+
+	for _, feed := range Feeds {
+		feedDto := toFeedDto(feed)
+		feeds = append(feeds, feedDto)
+	}
+	return feeds
+}
+
+func toFollowDto(databaseFeedFollow database.FeedFollow) follows {
+	return follows{
+		ID:        databaseFeedFollow.ID,
+		CreatedAt: databaseFeedFollow.CreatedAt,
+		UpdatedAt: databaseFeedFollow.UpdatedAt,
+		UserId:    databaseFeedFollow.UserID,
+		FeedId:    databaseFeedFollow.FeedID,
+	}
+}
+
+func toFollowsDtos(FeedFollows []database.FeedFollow) []follows {
+	follows := []follows{}
+
+	for _, follow := range FeedFollows {
+		feedFollowDto := toFollowDto(follow)
+		follows = append(follows, feedFollowDto)
+	}
+	return follows
 }
 
 //func toDtos(databaseUsers []database.User) []user {

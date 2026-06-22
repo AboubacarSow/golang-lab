@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/AboubacarSow/golang-lab/rss-aggregator/internal/auth"
 	"github.com/AboubacarSow/golang-lab/rss-aggregator/internal/database"
 	"github.com/google/uuid"
 )
@@ -16,22 +16,11 @@ type createFeedDto struct {
 	Url  string `json:"url"`
 }
 
-func (apiconf ApiConfig) createFeedHandler(w http.ResponseWriter, r *http.Request) {
-	apikey, err := auth.GetApiKey(r.Header)
-
-	if err != nil {
-		errorHelper(w, 401, err.Error())
-		return
-	}
-
-	user, err := apiconf.DB.GetUserByKey(r.Context(), apikey)
-	if err != nil {
-
-		errorHelper(w, 400, err.Error())
-	}
+func (apiconf ApiConfig) createFeedHandler(w http.ResponseWriter, r *http.Request,user database.User) {
+	
 	decoder := json.NewDecoder(r.Body)
 	requestDto := createFeedDto{}
-	err = decoder.Decode(&requestDto)
+	err := decoder.Decode(&requestDto)
 
 	if err != nil {
 		errorHelper(w, 400, "Error occured while decoding data")
@@ -56,4 +45,14 @@ func (apiconf ApiConfig) createFeedHandler(w http.ResponseWriter, r *http.Reques
 
 	jsonHelper(w, 201, toFeedDto(feed))
 
+}
+
+func (apiconf ApiConfig) getAllFeedsHandler(w http.ResponseWriter, r *http.Request){
+	feeds, err := apiconf.DB.GetAllFeeds(r.Context())
+
+	if err != nil {
+		errorHelper(w, 400, fmt.Sprintf("Error while fetching feeds:%v", err))
+		return
+	}
+	jsonHelper(w, 200, toFeedDtos(feeds))
 }

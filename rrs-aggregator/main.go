@@ -58,11 +58,16 @@ func main() {
 
 	// USER REST API ENDPOINTS
 	v1_router.Post("/users", apiConfig.createUserHandler)
-	v1_router.Get("/users", apiConfig.getUserHandler)
+	v1_router.Get("/users", apiConfig.authMiddleware(getUserHandler))
 	v1_router.Delete("/users/{id}", apiConfig.deleteUserHandler)
 
 	//Feed REST API ENDPOINTS
-	v1_router.Post("/feed", apiConfig.createFeedHandler)
+	v1_router.Post("/feeds", apiConfig.authMiddleware(apiConfig.createFeedHandler))
+	v1_router.Get("/feeds", apiConfig.getAllFeedsHandler)
+
+	// Feed Follow REST API ENDPOINTS
+	v1_router.Post("/feed_follows", apiConfig.authMiddleware(apiConfig.createFeedFollowsHandler))
+	v1_router.Get("/feed_follows", apiConfig.authMiddleware(apiConfig.getAllFeedFollowsHandler))
 
 	router.Mount("/api/v1", v1_router)
 
