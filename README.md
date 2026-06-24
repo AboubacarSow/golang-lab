@@ -29,6 +29,7 @@ golang-lab/
 ├── inventory/      # TUI Inventory Manager (Clean Architecture)
 ├── pokedex/        # REPL-based PokeAPI explorer (HTTP + cache)
 ├── webserver/      # Static file server with project pages
+├── rss-aggregator/  # RSS feed aggregator API service
 └── README.md
 ```
 
@@ -240,6 +241,86 @@ This project demonstrates how to use Go's standard library to serve static files
 
 ---
 
+## 5. rss-aggregator — RSS Aggregator API Service
+
+A backend service that stores RSS feeds, users, and followed feeds in PostgreSQL while continuously scraping feed posts in the background.
+
+### Architecture
+
+```mermaid
+flowchart TD
+    Client[Client / API Consumer]
+    Router[HTTP Server / chi Router]
+    Auth[Auth Middleware]
+
+    subgraph Handlers
+        UserHandler[User Handlers]
+        FeedHandler[Feed Handlers]
+        FollowHandler[Feed Follow Handlers]
+        PostHandler[Post Handler]
+    end
+
+    Scraper[Background Scraper Workers]
+    RSS[RSS Fetch + XML Parsing]
+    Queries[sqlc Queries]
+    DB[PostgreSQL Database]
+
+    Client --> Router
+    Router --> Auth
+    Router --> UserHandler & FeedHandler & FollowHandler & PostHandler
+    Auth --> UserHandler & FeedHandler & FollowHandler & PostHandler
+
+    Scraper --> RSS
+    Scraper --> Queries
+
+    UserHandler & FeedHandler & FollowHandler & PostHandler --> Queries
+    RSS --> DB
+    Queries --> DB
+```
+A high-level architecture view showing request flow from the API router through auth and handlers, plus the background scraper feeding posts into the Postgres-backed database.
+
+### Features
+
+* User registration with automatically generated API keys
+* Create and manage RSS feeds
+* Follow feeds to receive posts from followed sources
+* Background scraper workers that fetch feeds concurrently
+* Persistent RSS post storage via Postgres
+* JSON REST API with CORS support and health checks
+
+### Concepts
+
+* REST API design with `chi`
+* API key authentication middleware
+* Background goroutines and worker-style scraping
+* RSS parsing with `encoding/xml`
+* `sqlc`-generated typed database access
+* PostgreSQL migrations and query definitions
+
+### API Endpoints
+
+```
+POST /api/v1/users
+GET /api/v1/users
+DELETE /api/v1/users/{id}
+POST /api/v1/feeds
+GET /api/v1/feeds
+DELETE /api/v1/feeds/{id}
+POST /api/v1/feed_follows
+GET /api/v1/feed_follows
+GET /api/v1/posts
+```
+
+### Run
+
+```bash
+cd rss-aggregator
+# create a .env file with PORT and CONNECTION_STRING
+go run main.go
+```
+
+---
+
 ##  Roadmap
 
 ### Completed
@@ -252,6 +333,10 @@ This project demonstrates how to use Go's standard library to serve static files
 * Mutex usage
 * TTL cache design
 * Static file serving
+* REST API server with `chi`
+* PostgreSQL data modeling and migrations
+* Background feed scraping and worker coordination
+* API key authentication middleware
 
 ### In Progress
 
@@ -295,6 +380,13 @@ This project demonstrates how to use Go's standard library to serve static files
 * Static file serving
 * Web documentation
 * Simple HTTP routing
+
+### rss-aggregator
+
+* REST API design
+* Auth middleware and API keys
+* Postgres-backed feed and post storage
+* Background scraping workers
 
 ---
 
