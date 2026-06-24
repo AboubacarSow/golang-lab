@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/xml"
 	"log"
 	"net/http"
 )
@@ -29,6 +30,19 @@ func jsonHelper(w http.ResponseWriter, statusCode int, payload interface{}) {
 	}
 
 	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	w.Write(data)
+}
+
+func xmlHelper(w http.ResponseWriter, statusCode int, payload interface{}) {
+	data, err := xml.Marshal(payload)
+
+	if err != nil {
+		log.Printf("Failed to Marshal payload:%v", payload)
+		w.WriteHeader(500)
+	}
+
+	w.Header().Add("Content-Type", "application/xml")
 	w.WriteHeader(statusCode)
 	w.Write(data)
 }

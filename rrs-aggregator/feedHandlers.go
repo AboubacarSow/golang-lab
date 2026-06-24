@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/AboubacarSow/golang-lab/rss-aggregator/internal/database"
@@ -16,8 +17,8 @@ type createFeedDto struct {
 	Url  string `json:"url"`
 }
 
-func (apiconf ApiConfig) createFeedHandler(w http.ResponseWriter, r *http.Request,user database.User) {
-	
+func (apiconf ApiConfig) createFeedHandler(w http.ResponseWriter, r *http.Request, user database.User) {
+
 	decoder := json.NewDecoder(r.Body)
 	requestDto := createFeedDto{}
 	err := decoder.Decode(&requestDto)
@@ -47,7 +48,7 @@ func (apiconf ApiConfig) createFeedHandler(w http.ResponseWriter, r *http.Reques
 
 }
 
-func (apiconf ApiConfig) getAllFeedsHandler(w http.ResponseWriter, r *http.Request){
+func (apiconf ApiConfig) getAllFeedsHandler(w http.ResponseWriter, r *http.Request) {
 	feeds, err := apiconf.DB.GetAllFeeds(r.Context())
 
 	if err != nil {
@@ -55,4 +56,31 @@ func (apiconf ApiConfig) getAllFeedsHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 	jsonHelper(w, 200, toFeedDtos(feeds))
+}
+
+func (apiconf ApiConfig) DeleteOneFeedHandler(w http.ResponseWriter, r *http.Request, user database.User) {
+	stringId := strings.TrimPrefix(r.URL.RequestURI(),"/api/v1/feeds/")
+
+	id, err := uuid.Parse(stringId)
+	if err != nil {
+		errorHelper(w, http.StatusBadRequest, fmt.Sprintf("string id:%v. Message:%v",stringId,err.Error()))
+		return
+	}
+
+	feed, err := apiconf.DB.GetOneFeed(r.Context(), id)
+	if err != nil {
+		errorHelper(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	if feed.UserID != user.ID {
+		errorHelper(w, http.StatusUnauthorized, "You don't have permission to process this operation")
+		return
+	}
+	err = apiconf.DB.DeleteFeed(r.Context(), id)
+	if err != nil {
+		errorHelper(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+	jsonHelper(w, 200, struct{}{})
+
 }

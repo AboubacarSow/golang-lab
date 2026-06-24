@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/AboubacarSow/golang-lab/rss-aggregator/internal/database"
 	"github.com/go-chi/chi"
@@ -38,6 +39,7 @@ func main() {
 	apiConfig := ApiConfig{
 		DB: database.New(conn),
 	}
+	go scraperSpinner(apiConfig.DB, 3, 10*time.Second)
 
 	router := chi.NewRouter()
 
@@ -64,10 +66,14 @@ func main() {
 	//Feed REST API ENDPOINTS
 	v1_router.Post("/feeds", apiConfig.authMiddleware(apiConfig.createFeedHandler))
 	v1_router.Get("/feeds", apiConfig.getAllFeedsHandler)
+	v1_router.Delete("/feeds/{id}", apiConfig.authMiddleware(apiConfig.DeleteOneFeedHandler))
 
 	// Feed Follow REST API ENDPOINTS
 	v1_router.Post("/feed_follows", apiConfig.authMiddleware(apiConfig.createFeedFollowsHandler))
 	v1_router.Get("/feed_follows", apiConfig.authMiddleware(apiConfig.getAllFeedFollowsHandler))
+
+	// Test
+	//v1_router.Get("/display-rss", outputRssFeedHandler)
 
 	router.Mount("/api/v1", v1_router)
 
