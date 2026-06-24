@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>rss-aggregator — Golang Lab</title>
+	<meta name="description" content="rss-aggregator project details for the golang-lab webserver." />
+	<style>
+		:root{--bg:#0f1724;--card:#111827;--muted:#9ca3af;--accent:#06b6d4;--glass:rgba(255,255,255,0.04)}
+		*{box-sizing:border-box}
+		html,body{min-height:100%}
+		body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6;background:linear-gradient(180deg,#071029 0%, #07162a 100%);-webkit-font-smoothing:antialiased}
+		header{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;max-width:1100px;margin:0 auto}
+		.brand{display:flex;align-items:center;gap:.75rem}
+		.logo{width:40px;height:40px;background:linear-gradient(135deg,var(--accent),#7c3aed);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#021125;font-weight:700}
+		nav a{color:var(--muted);text-decoration:none;margin-left:1rem;font-size:.95rem}
+		.container{max-width:1100px;margin:2rem auto;padding:0 1.25rem}
+		.hero-card{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:12px;padding:2rem;box-shadow:0 6px 24px rgba(2,6,23,0.6);backdrop-filter:blur(6px)}
+		h1{margin:0;font-size:clamp(1.5rem,3.5vw,2.4rem);line-height:1.05;color:#f8fafc}
+		p.lead{color:var(--muted);margin:.8rem 0 1.2rem}
+		p{color:#d1d5db;line-height:1.75}
+		ul{color:#d1d5db;margin:0 0 1rem 1.2rem;line-height:1.8}
+		code{background:rgba(255,255,255,0.06);padding:.15rem .35rem;border-radius:6px;color:#d6bcfa}
+		pre{background:#071727;color:#cdeef6;padding:1rem;border-radius:8px;overflow:auto}
+		.footer{margin-top:2rem;color:var(--muted);text-align:center}
+		.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--accent);color:#021125;padding:.75rem 1rem;border-radius:10px;border:0;font-weight:600;text-decoration:none}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="brand">
+			<div class="logo">RA</div>
+			<div>
+				<div style="font-weight:700;color:#f8fafc">rss-aggregator</div>
+				<div style="font-size:.8rem;color:var(--muted);margin-top:2px">RSS aggregator API service</div>
+			</div>
+		</div>
+		<nav>
+			<a href="/">Home</a>
+			<a href="/about.html">About</a>
+		</nav>
+	</header>
+
+	<main class="container">
+		<div class="hero-card">
+			<h1>rss-aggregator — RSS Aggregator API Service</h1>
+			<p class="lead">A backend service that stores RSS feeds, users, and feed follows in PostgreSQL while scraping feed posts on a background schedule.</p>
+
+			<h2 style="margin-top:1.75rem">Overview</h2>
+			<p>This project demonstrates a REST API built with <code>chi</code>, typed database access via <code>sqlc</code>, and a background scraper that parses RSS feeds into a Postgres database.</p>
+
+			<h2>Key components</h2>
+			<ul>
+				<li>User management with generated API keys</li>
+				<li>Feed creation and listing</li>
+				<li>Follow feeds to collect posts</li>
+				<li>Background scraping workers for RSS polling</li>
+				<li>PostgreSQL persistence for feeds, follows, and posts</li>
+			</ul>
+
+			<h2>Architecture</h2>
+			<p>The service routes requests through auth middleware, maps handlers to sqlc queries, and runs concurrent scraper workers to fetch RSS feeds in the background.</p>
+
+			<h2>API Endpoints</h2>
+			<pre><code>POST /api/v1/users
+GET /api/v1/users
+DELETE /api/v1/users/{id}
+POST /api/v1/feeds
+GET /api/v1/feeds
+DELETE /api/v1/feeds/{id}
+POST /api/v1/feed_follows
+GET /api/v1/feed_follows
+GET /api/v1/posts</code></pre>
+
+			<h2>Run locally</h2>
+			<pre><code>cd ../rss-aggregator
+# create a .env file with PORT and CONNECTION_STRING
+go run main.go</code></pre>
+
+			<h2>Structure</h2>
+			<ul>
+				<li><code>main.go</code> — server entry point and route setup</li>
+				<li><code>scraper.go</code> — RSS fetch scheduler and worker coordination</li>
+				<li><code>rss.go</code> — RSS XML parsing</li>
+				<li><code>internal/database</code> — sqlc-generated DB layer</li>
+				<li><code>migrations/</code> — Postgres schema and query definitions</li>
+			</ul>
+
+			<h2>Why it matters</h2>
+			<p>rss-aggregator is a practical example of combining API design, persistent storage, and background processing in Go.</p>
+
+			<div class="footer">
+				<a class="btn" href="/">Back to home</a>
+			</div>
+		</div>
+	</main>
+</body>
+</html>
