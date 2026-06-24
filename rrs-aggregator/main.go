@@ -68,6 +68,9 @@ func main() {
 	v1_router.Get("/feeds", apiConfig.getAllFeedsHandler)
 	v1_router.Delete("/feeds/{id}", apiConfig.authMiddleware(apiConfig.DeleteOneFeedHandler))
 
+	// POSTS ENDPOINTS
+	v1_router.Get("/posts", apiConfig.authMiddleware(apiConfig.getPostsByUserHandler))
+
 	// Feed Follow REST API ENDPOINTS
 	v1_router.Post("/feed_follows", apiConfig.authMiddleware(apiConfig.createFeedFollowsHandler))
 	v1_router.Get("/feed_follows", apiConfig.authMiddleware(apiConfig.getAllFeedFollowsHandler))

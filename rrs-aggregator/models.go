@@ -31,6 +31,17 @@ type follows struct {
 	UserId    uuid.UUID `json:"user_id"`
 }
 
+type post struct {
+	Id          uuid.UUID `json:"id"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	PublishedAt time.Time `json:"published_at"`
+	Url         string    `json:"url"`
+	FeedId      uuid.UUID `json:"feed_id"`
+}
+
 func toUserDto(databaseUser database.User) user {
 	return user{
 		ID:        databaseUser.ID,
@@ -80,6 +91,29 @@ func toFollowsDtos(FeedFollows []database.FeedFollow) []follows {
 		follows = append(follows, feedFollowDto)
 	}
 	return follows
+}
+
+func toPostDto(databasePost database.Post) post {
+	return post{
+		Id:          databasePost.ID,
+		CreatedAt:   databasePost.CreatedAt,
+		UpdatedAt:   databasePost.UpdatedAt,
+		Title:       databasePost.Title,
+		Url:         databasePost.Url,
+		Description: databasePost.Description.String,
+		PublishedAt: databasePost.PublishedAt,
+		FeedId:      databasePost.FeedID,
+	}
+}
+
+func toPostDtos(databasePosts []database.Post) []post {
+	posts := []post{}
+
+	for _, item := range databasePosts {
+		posts = append(posts, toPostDto(item))
+	}
+
+	return posts
 }
 
 //func toDtos(databaseUsers []database.User) []user {
